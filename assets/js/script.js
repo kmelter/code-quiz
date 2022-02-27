@@ -18,6 +18,7 @@ var question2 = {
     correctAnswer: "3"
 };
 
+var questionsArray = [question1, question2];
 
 
 
@@ -56,16 +57,16 @@ function createButtons() {
     }
 }
 
-function askQuestion1() {
+function askQuestion(questionNumber) {
     
     // CLEAR CONTENTS
     answerArea.textContent = ""
     
     // display the question
-    questionText.textContent = question1.question
+    questionText.textContent = questionsArray[questionNumber].question;
     // display buttons for each of the four answers
-    for (i = 0; i < question1.answers.length; i++) {
-        answerElements[i].textContent = question1.answers[i];
+    for (i = 0; i < questionsArray[questionNumber].answers.length; i++) {
+        answerElements[i].textContent = questionsArray[questionNumber].answers[i];
         answerArea.appendChild(answerElements[i]);
     }
     
@@ -76,16 +77,27 @@ function askQuestion1() {
         //else add event listener for incorrect answer
 
     for (i = 0; i < answerElements.length; i++) {
-        if (answerElements[i].id === question1.correctAnswer) {
+        if (answerElements[i].id === questionsArray[questionNumber].correctAnswer) {
             answerElements[i].addEventListener("click", function() {
                 answerResult.textContent = "Correct";
-                // go to the next question
+                if (questionNumber + 1 < questionsArray.length) {
+                    askQuestion(questionNumber + 1);
+                }
+                else {
+                    gameOver();
+                }
             });
         }
         else {
             answerElements[i].addEventListener("click", function() {
                 answerResult.textContent = "incorrect";
                 timeLeft = timeLeft - 10;
+                if (questionNumber + 1 < questionsArray.length) {
+                    askQuestion(questionNumber + 1);
+                }
+                else {
+                    gameOver();
+                }
             });
         }
     }
@@ -94,7 +106,7 @@ function askQuestion1() {
 function gameStart() {
     countdown();
     createButtons();
-    askQuestion1();
+    askQuestion(0);
 }
 
 
