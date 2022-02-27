@@ -18,11 +18,27 @@ var question2 = {
     correctAnswer: "3"
 };
 
-var questionsArray = [question1, question2];
+var question3 = {
+    question: "Arrays in JavaScript can be used to store_____.",
+    answers: ["1. numbers and strings", "2. other arrays", "3. booleans", "4. all of the above"],
+    correctAnswer: "4"
+};
 
+var question4 = {
+    question: "String values must be enclosed within ____ when being assigned to variables.",
+    answers: ["1. commas", "2. curly brackets", "3. quotes", "4. parenthesis"],
+    correctAnswer: "3"
+};
 
+var question5 = {
+    question: "A very useful tool used during development and debugging for printing content to the debugger is:",
+    answers: ["1. JavaScript", "2. terminal/bash", "3. for loops", "4. console.log"],
+    correctAnswer: "4"
+};
 
+var questionsArray = [question1, question2, question3, question4, question5];
 
+// gameOver() function
 function gameOver() {
     // message displays notifying player that game has ended
     questionText.textContent = "Game Over";
@@ -31,6 +47,7 @@ function gameOver() {
     // initials and score are displayed (maybe other function)
 }
 
+// timer function
 function countdown() {
     var timeLeft = 60;
   
@@ -48,9 +65,10 @@ function countdown() {
     }, 1000);
 }
 
+// function that creates each of the four answer buttons
 function createButtons() {
     // makes empty buttons to use for each question
-    for (i = 0; i < question1.answers.length; i++) {
+    for (i = 0; i < 4; i++) {
         var answerButton = document.createElement("button");
         answerButton.id = i + 1;
         answerElements.push(answerButton);
