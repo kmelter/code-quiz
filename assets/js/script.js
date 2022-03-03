@@ -3,6 +3,7 @@ var timerEl = document.getElementById('countdown');
 var questionText = document.getElementById('question');
 var answerArea = document.getElementById('main');
 var answerResult = document.getElementById('result');
+var currentQuestionNumber = 0;
 
 var answerElements = [];
 
@@ -42,16 +43,15 @@ var questionsArray = [question1, question2, question3, question4, question5];
 function gameOver() {
     // message displays notifying player that game has ended
     questionText.textContent = "Game Over";
-    answerArea.textContent = ""
+    answerArea.textContent = "Your score is " + timeLeft;
     // Game asks for initials
     // initials and score are displayed (maybe other function)
 }
 
 // timer function
 function countdown() {
-    var timeLeft = 60;
+    timeLeft = 60;
   
-    // TODO: Use the `setInterval()` method to call a function to be executed every 1000 milliseconds
     var timeInterval = setInterval(function() {
       if (timeLeft >= 0) {
         timerEl.textContent = "Time: " + timeLeft;
@@ -65,13 +65,44 @@ function countdown() {
     }, 1000);
 }
 
+// answerAssessment function
+// * pass in event to reference the "click" and using event.currentTarget.id to compare the id of the clicked button to the correct answer component of the question object
+function answerAssessment(event) {
+    // answerAssessment will figure out what question we're on and which answer is "correct"
+    if (event.currentTarget.id === questionsArray[currentQuestionNumber].correctAnswer) {
+        answerResult.textContent = "Correct";
+        if (currentQuestionNumber + 1 < questionsArray.length) {
+            askQuestion(currentQuestionNumber + 1);
+        }
+        else {
+            gameOver();
+        }  
+    }
+    else {
+        answerResult.textContent = "incorrect";
+        timeLeft = timeLeft - 10;
+        if (currentQuestionNumber + 1 < questionsArray.length) {
+            askQuestion(currentQuestionNumber + 1);
+        }
+        else {
+            gameOver();
+        }
+    }
+}
+
 // function that creates each of the four answer buttons
 function createButtons() {
     // makes empty buttons to use for each question
     for (i = 0; i < 4; i++) {
         var answerButton = document.createElement("button");
+        //assigning id's to each button
         answerButton.id = i + 1;
+        //answerElements is an empty array that we push the contents of answerButton into
         answerElements.push(answerButton);
+        //add event listener that calls function answerAssessment
+        answerButton.addEventListener("click",  
+            answerAssessment
+        );
     }
 }
 
@@ -79,6 +110,7 @@ function askQuestion(questionNumber) {
     
     // CLEAR CONTENTS
     answerArea.textContent = ""
+    currentQuestionNumber = questionNumber;
     
     // display the question
     questionText.textContent = questionsArray[questionNumber].question;
@@ -86,39 +118,7 @@ function askQuestion(questionNumber) {
     for (i = 0; i < questionsArray[questionNumber].answers.length; i++) {
         answerElements[i].textContent = questionsArray[questionNumber].answers[i];
         answerArea.appendChild(answerElements[i]);
-    }
-    
-    
-    //for each element in answerElements
-        //if the element id === the correct answer id
-        //then add event listener for correct answer
-        //else add event listener for incorrect answer
-
-    for (i = 0; i < answerElements.length; i++) {
-        if (answerElements[i].id === questionsArray[questionNumber].correctAnswer) {
-            answerElements[i].addEventListener("click", function() {
-                answerResult.textContent = "Correct";
-                if (questionNumber + 1 < questionsArray.length) {
-                    askQuestion(questionNumber + 1);
-                }
-                else {
-                    gameOver();
-                }
-            });
-        }
-        else {
-            answerElements[i].addEventListener("click", function() {
-                answerResult.textContent = "incorrect";
-                timeLeft = timeLeft - 10;
-                if (questionNumber + 1 < questionsArray.length) {
-                    askQuestion(questionNumber + 1);
-                }
-                else {
-                    gameOver();
-                }
-            });
-        }
-    }
+    }   
 }
 
 function gameStart() {
