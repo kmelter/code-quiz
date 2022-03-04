@@ -1,4 +1,5 @@
 var timeLeft;
+var timeInterval;
 var timerEl = document.getElementById('countdown');
 var questionText = document.getElementById('question');
 var answerArea = document.getElementById('main');
@@ -44,15 +45,41 @@ function gameOver() {
     // message displays notifying player that game has ended
     questionText.textContent = "Game Over";
     answerArea.textContent = "Your score is " + timeLeft;
+    clearInterval(timeInterval);
+    timerEl.textContent = "";
     // Game asks for initials
-    // initials and score are displayed (maybe other function)
+    var initialsForm = document.createElement("form");
+    var initialsLabel = document.createElement("label");
+    var initialsInput = document.createElement("input");
+    var initialsButton = document.createElement("button");
+    initialsInput.id = "userInitials";
+    initialsForm.id = "form1";
+    initialsLabel.textContent = "Enter your initials: ";
+    initialsButton.textContent = "Submit";
+    initialsButton.setAttribute("type", "submit");
+    initialsButton.setAttribute("form", "form1");
+    initialsButton.setAttribute("value", "Submit");
+    initialsForm.appendChild(initialsLabel);
+    initialsForm.appendChild(initialsInput);
+    initialsForm.appendChild(initialsButton);
+    document.getElementById("initials").appendChild(initialsForm);
+    initialsInput.addEventListener("submit", function(event) {
+        event.preventDefault();
+        // TODO: store the information and display the score with initials
+        var user = {
+            initials: initialsInput.value.trim(),
+            score: timeLeft.value.trim()
+        }
+        localStorage.setItem("user", JSON.stringify(user));
+        window.location.href = "./scores.html";
+    });
 }
 
 // timer function
 function countdown() {
     timeLeft = 60;
   
-    var timeInterval = setInterval(function() {
+    timeInterval = setInterval(function() {
       if (timeLeft >= 0) {
         timerEl.textContent = "Time: " + timeLeft;
         timeLeft = timeLeft - 1; 
