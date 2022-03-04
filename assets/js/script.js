@@ -4,6 +4,7 @@ var timerEl = document.getElementById('countdown');
 var questionText = document.getElementById('question');
 var answerArea = document.getElementById('main');
 var answerResult = document.getElementById('result');
+var quizStart = document.getElementById("startquiz")
 var currentQuestionNumber = 0;
 
 var answerElements = [];
@@ -44,10 +45,9 @@ var questionsArray = [question1, question2, question3, question4, question5];
 function gameOver() {
     // message displays notifying player that game has ended
     questionText.textContent = "Game Over";
-    answerArea.textContent = "Your score is " + timeLeft;
-    clearInterval(timeInterval);
-    timerEl.textContent = "";
-    // Game asks for initials
+    if (timeLeft > 0) {
+        answerArea.textContent = "Your score is " + timeLeft;
+        // Game asks for initials
     var initialsForm = document.createElement("form");
     var initialsLabel = document.createElement("label");
     var initialsInput = document.createElement("input");
@@ -73,6 +73,13 @@ function gameOver() {
         localStorage.setItem("user", JSON.stringify(user));
         window.location.href = "./scores.html";
     });
+    }
+    else {
+        answerArea.textContent = "You did not score any points.";
+    }
+    clearInterval(timeInterval);
+    timerEl.textContent = "";
+    
 }
 
 // timer function
@@ -80,7 +87,7 @@ function countdown() {
     timeLeft = 60;
   
     timeInterval = setInterval(function() {
-      if (timeLeft >= 0) {
+      if (timeLeft > 0) {
         timerEl.textContent = "Time: " + timeLeft;
         timeLeft = timeLeft - 1; 
       }
@@ -155,4 +162,7 @@ function gameStart() {
 }
 
 
-gameStart();
+quizStart.addEventListener("click", function() {
+    gameStart();
+    document.getElementById("startbutton").textContent = "";
+});
