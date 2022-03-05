@@ -79,6 +79,7 @@ function gameOver() {
     }
     clearInterval(timeInterval);
     timerEl.textContent = "";
+    // TODO: create button to restart the quiz
     
 }
 
