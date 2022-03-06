@@ -72,6 +72,7 @@ function gameOver() {
         }
         localStorage.setItem("user", JSON.stringify(user));
         window.location.href = "./scores.html";
+        document.getElementById("listscores").textContent = localStorage.getItem("user", JSON.parse(user));
     });
     }
     else {
