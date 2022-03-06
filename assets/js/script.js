@@ -7,6 +7,11 @@ var answerResult = document.getElementById('result');
 var quizStart = document.getElementById("startquiz")
 var currentQuestionNumber = 0;
 
+var initialsInput = document.querySelector("#initials-entry");
+var submitButton = document.querySelector("#form-submit");
+
+var highScoresStorage = localStorage.setItem('highscores', "");
+
 var answerElements = [];
 
 var question1 = {
@@ -41,46 +46,57 @@ var question5 = {
 
 var questionsArray = [question1, question2, question3, question4, question5];
 
+
+function saveToLocal (value){
+    //Stringify object into saveable items
+    var saveableValue = JSON.stringify(value);
+    //Save key highscores with value from saveableValue
+    localStorage.setItem('highscores', saveableValue);
+}
+
+function getScores(){
+    //Get item from local storage
+    var localStorageItem = localStorage.getItem('highscores');
+    //Parses localStorage back into a JSON object
+    var highScoresArray = JSON.parse(localStorageItem);
+    //Return Array object
+    return highScoresArray;
+}
+
+function submitScore(initialEntry, score){
+    //Get current store of saved stuff, should be the shape of an object
+    var highscores = getScores();
+    console.log(highscores);
+    //Assign arguments key and value pair to an object
+    var objToSave = {
+      initials: initialEntry,
+      score: score
+    }
+    //Add new score to array of all scores
+    highscores.push(objToSave);
+    //Save array to localStorage
+    saveToLocal(highscores);
+}
+
 // gameOver() function
 function gameOver() {
     // message displays notifying player that game has ended
     questionText.textContent = "Game Over";
     if (timeLeft > 0) {
         answerArea.textContent = "Your score is " + timeLeft;
-        // Game asks for initials
-    var initialsForm = document.createElement("form");
-    var initialsLabel = document.createElement("label");
-    var initialsInput = document.createElement("input");
-    var initialsButton = document.createElement("button");
-    initialsInput.id = "userInitials";
-    initialsForm.id = "form1";
-    initialsLabel.textContent = "Enter your initials: ";
-    initialsButton.textContent = "Submit";
-    initialsButton.setAttribute("type", "submit");
-    initialsButton.setAttribute("form", "form1");
-    initialsButton.setAttribute("value", "Submit");
-    initialsForm.appendChild(initialsLabel);
-    initialsForm.appendChild(initialsInput);
-    initialsForm.appendChild(initialsButton);
-    document.getElementById("initials").appendChild(initialsForm);
-    initialsInput.addEventListener("submit", function(event) {
-        event.preventDefault();
-        // TODO: store the information and display the score with initials
-        var user = {
-            initials: initialsInput.value.trim(),
-            score: timeLeft.value.trim()
-        }
-        localStorage.setItem("user", JSON.stringify(user));
-        window.location.href = "./scores.html";
-        document.getElementById("listscores").textContent = localStorage.getItem("user", JSON.parse(user));
-    });
+        
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault();
+            submitScore(initialsInput.value.trim(), timeLeft);
+            window.location.href="./scores.html";
+        });
     }
     else {
         answerArea.textContent = "You did not score any points.";
     }
     clearInterval(timeInterval);
     timerEl.textContent = "";
-    // TODO: create button to restart the quiz
+    
     
 }
 
