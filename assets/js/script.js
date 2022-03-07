@@ -10,9 +10,12 @@ var currentQuestionNumber = 0;
 var initialsInput = document.querySelector("#initials-entry");
 var submitButton = document.querySelector("#form-submit");
 
-var highScoresStorage = localStorage.setItem('highscores', "");
+// var highScoresStorage = localStorage.setItem('highscores', "");
 
 var answerElements = [];
+
+const NO_OF_HIGH_SCORES = 10;
+const HIGH_SCORES = 'highScores';
 
 var question1 = {
     question: "Commonly used data types DO NOT include:",
@@ -46,36 +49,45 @@ var question5 = {
 
 var questionsArray = [question1, question2, question3, question4, question5];
 
-
-function saveToLocal (value){
-    //Stringify object into saveable items
-    var saveableValue = JSON.stringify(value);
-    //Save key highscores with value from saveableValue
-    localStorage.setItem('highscores', saveableValue);
+function showHighScores() {
+    window.location.href="./scores.html";
+    const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) ?? [];
+    var highScoreList = document.getElementById("listscores");
+    var scoreLI = document.createElement("li");
+    scoreLI.textContent = highScores;//.map((score) => `${score.score} - ${score.name}`).join('');
+    highScoreList.appendChild(scoreLI);
+    
+    
+    // highScoreList.innerHTML = highScores
+    //   .map((score) => `<li>${score.score} - ${score.name}`)
+    //   .join('');
 }
 
-function getScores(){
-    //Get item from local storage
-    var localStorageItem = localStorage.getItem('highscores');
-    //Parses localStorage back into a JSON object
-    var highScoresArray = JSON.parse(localStorageItem);
-    //Return Array object
-    return highScoresArray;
-}
+function saveHighScore(score, highScores) {
+    const name = initialsInput.value;
+    const newScore = { score, name };
+    
+    // 1. Add to list
+    highScores.push(newScore);
+  
+    // 2. Sort the list
+    highScores.sort((a, b) => b.score-a.score);
+    
+    // 3. Select new list
+    highScores.splice(NO_OF_HIGH_SCORES);
+    
+    // 4. Save to local storage
+    localStorage.setItem(HIGH_SCORES, JSON.stringify(highScores));
+};
 
-function submitScore(initialEntry, score){
-    //Get current store of saved stuff, should be the shape of an object
-    var highscores = getScores();
-    console.log(highscores);
-    //Assign arguments key and value pair to an object
-    var objToSave = {
-      initials: initialEntry,
-      score: score
+function checkHighScore(score) {
+    const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) ?? [];
+    const lowestScore = highScores[NO_OF_HIGH_SCORES-1]?.score ?? 0;
+    
+    if (score > lowestScore) {
+      saveHighScore(score, highScores);
+      showHighScores(); // TODO
     }
-    //Add new score to array of all scores
-    highscores.push(objToSave);
-    //Save array to localStorage
-    saveToLocal(highscores);
 }
 
 // gameOver() function
@@ -87,8 +99,7 @@ function gameOver() {
         
         submitButton.addEventListener("click", function(event) {
             event.preventDefault();
-            submitScore(initialsInput.value.trim(), timeLeft);
-            window.location.href="./scores.html";
+            checkHighScore(timeLeft);
         });
     }
     else {
