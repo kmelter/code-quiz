@@ -54,13 +54,13 @@ function showHighScores() {
     const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) ?? [];
     var highScoreList = document.getElementById("listscores");
     var scoreLI = document.createElement("li");
-    scoreLI.textContent = highScores;//.map((score) => `${score.score} - ${score.name}`).join('');
+    scoreLI.textContent = highScores.map((score) => `${score.score} - ${score.name}`).join('');
     highScoreList.appendChild(scoreLI);
     
     
-    // highScoreList.innerHTML = highScores
-    //   .map((score) => `<li>${score.score} - ${score.name}`)
-    //   .join('');
+    highScoreList.innerHTML = highScores
+      .map((score) => `<li>${score.score} - ${score.name}`)
+      .join('');
 }
 
 function saveHighScore(score, highScores) {
